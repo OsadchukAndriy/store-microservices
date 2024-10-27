@@ -2,6 +2,7 @@ package com.store.userservice.controller;
 
 
 import com.store.userservice.model.User;
+import com.store.userservice.service.UserProducer;
 import com.store.userservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserProducer userProducer;
 
     @PostMapping("/register")
     public User registerUser(@RequestBody User user) {
@@ -28,5 +31,13 @@ public class UserController {
     @GetMapping
     public List<User> getAllUsers() {
         return userService.findAllUsers();
+    }
+
+    // test
+    @GetMapping("/send")
+    public String sendMessage(@RequestParam("message") String message) {
+        userProducer.sendMessage(message);
+        System.out.println("Done");
+        return "Message sent: " + message;
     }
 }
