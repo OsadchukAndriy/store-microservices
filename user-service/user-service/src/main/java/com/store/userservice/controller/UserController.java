@@ -6,6 +6,8 @@ import com.store.userservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -21,5 +23,10 @@ public class UserController {
     @GetMapping("/{username}")
     public User getUser(@PathVariable String username) {
         return userService.findByUsername(username);
+    }
+
+    @GetMapping
+    public List<User> getAllUsers() {
+        return userService.findAllUsers();
     }
 }
