@@ -31,6 +31,7 @@ public class UserController {
     @GetMapping
     public List<User> getAllUsers() {
         return userService.findAllUsers();
+
     }
 
     // test
