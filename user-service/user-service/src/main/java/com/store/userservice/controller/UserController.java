@@ -20,7 +20,12 @@ public class UserController {
 
     @PostMapping("/register")
     public User registerUser(@RequestBody User user) {
-        return userService.registerUser(user);
+        User registeredUser = userService.registerUser(user);
+
+        // send to kafka
+        userProducer.sendUserCreatedEvent(String.valueOf(registeredUser));
+
+        return registeredUser;
     }
 
     @GetMapping("/{username}")
@@ -32,13 +37,5 @@ public class UserController {
     public List<User> getAllUsers() {
         return userService.findAllUsers();
 
-    }
-
-    // test
-    @GetMapping("/send")
-    public String sendMessage(@RequestParam("message") String message) {
-        userProducer.sendMessage(message);
-        System.out.println("Done");
-        return "Message sent: " + message;
     }
 }

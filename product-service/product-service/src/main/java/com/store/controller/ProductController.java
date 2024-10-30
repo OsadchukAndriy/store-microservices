@@ -1,8 +1,8 @@
 package com.store.controller;
 
 import com.store.model.Product;
+import com.store.service.ProductProducer;
 import com.store.service.ProductService;
-import jakarta.persistence.Access;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,11 +13,18 @@ import java.util.List;
 public class ProductController {
 
     @Autowired
+    private ProductProducer productProducer;
+    @Autowired
     private ProductService productService;
 
     @PostMapping
     public Product createProduct(@RequestBody Product product) {
-        return productService.createProduct(product);
+        Product createdProduct = productService.createProduct(product);
+
+        // send to kafka
+        productProducer.sendProductCreatedEvent(String.valueOf(createdProduct));
+
+        return createdProduct;
     }
 
     @GetMapping("/{id}")
