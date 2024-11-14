@@ -13,4 +13,6 @@ public interface UserService {
     public User findByUsername(String username);
 
     public List<User> findAllUsers();
+
+    String loginUser(String username, String password);
 }

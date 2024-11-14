@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -38,4 +39,11 @@ public class UserController {
         return userService.findAllUsers();
 
     }
+
+    @PostMapping("/login")
+    public Map<String, String> loginUser(@RequestBody User user) {
+        String token = userService.loginUser(user.getUsername(), user.getPassword());
+        return Map.of("token", token); // Повертаємо токен у форматі JSON
+    }
+
 }
