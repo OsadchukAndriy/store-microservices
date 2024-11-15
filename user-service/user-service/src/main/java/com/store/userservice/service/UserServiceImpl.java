@@ -1,5 +1,6 @@
 package com.store.userservice.service;
 
+import com.store.userservice.config.JwtUtil;
 import com.store.userservice.model.User;
 import com.store.userservice.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
@@ -19,10 +20,17 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+    private final JwtUtil jwtUtil;
+
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
+    public UserServiceImpl(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
+
 
     @Override
     public User registerUser(User user) {
@@ -44,12 +52,8 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(username);
 
         if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-            return Jwts.builder()
-                    .setSubject(user.getUsername())
-                    .setIssuedAt(new Date())
-                    .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // Термін дії 1 день
-                    .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
-                    .compact();
+            // Використовуємо JwtUtil для генерації токена
+            return jwtUtil.generateToken(user.getUsername());
         } else {
             throw new RuntimeException("Invalid credentials");
         }
